@@ -84,3 +84,5 @@ class DataPrep:
                     feature_vect[i] /= np.sum(feature_vect[i])
                 else:
                     print("IS NAN")
+        
+            self.corpus[f'{self.method}_{self.n}_grams_feature'] = feature_vect
