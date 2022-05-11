@@ -1,4 +1,3 @@
-from email.policy import default
 import pandas as pd
 import os
 import nltk
@@ -73,6 +72,7 @@ class DataPrep:
         
         for gram in selected_grams:
             print(gram, self.gram_count[ self.g2i[gram] ])
+        
         if self.method == 'TF':
             feature_vect = np.zeros( ( len(self.corpus), self.feature_size) )
             
