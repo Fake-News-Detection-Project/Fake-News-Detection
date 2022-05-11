@@ -56,7 +56,7 @@ class DataPrep:
                 if self.g2i.get(gram) == None: 
                     self.i2g.append( gram )
                     self.gram_count.append(0)
-                    self.g2i[gram] = self.N 
+                    self.g2i[gram] = self.N  * 1000
                     self.N  += 1
                 self.gram_count[ self.g2i[gram] ] += 1
 
