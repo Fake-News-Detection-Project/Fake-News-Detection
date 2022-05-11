@@ -17,7 +17,7 @@ As we want initialy to reproduce the results in [2], we will follow the same dat
 - case lowering
 - Stop word removal
 - tokenization
-- stemming (Porter stemmer)
+- stemming (Porter stemmer in the original paper) > Can use different stemmers
 - n-gram word based tokenizer
 
 ### Feature comparison
