@@ -19,6 +19,8 @@ if __name__ == '__main__':
     fake['label'] = np.zeros(len(fake), dtype=int)
 
     data = pd.concat((true,fake),axis=0)
+    
+    lemmatizer = nltk.stem.WordNetLemmatizer()
 
     stop_words = ["a", "about", "an", "are", "as", "at", "be", "by", "for", "from", "how", "in", "is", "of", "on", "or", "that", "the", "these", "this", "too", "was", "what", "when", "where", "who", "will"]
     new_text = []
@@ -27,7 +29,7 @@ if __name__ == '__main__':
         txt = re.sub(pattern," ",txt)
         txt = txt.lower()
         txt = nltk.word_tokenize(txt) # Tokenizing
-        txt = [lemma.lemmatize(word) for word in txt]
+        txt = [lemmatizer.lemmatize(word) for word in txt]
         txt = " ".join(txt)
         new_text.append(txt)
 
