@@ -1,5 +1,4 @@
 from email.policy import default
-import torch
 import pandas as pd
 import os
 import nltk
@@ -88,7 +87,7 @@ class DataPrep:
                 else:
                     print("IS NAN")
 
-
+        self.corpus[f'{self.method}_{self.n}_grams_feature'] = feature_vect
                 
 
 if __name__ == '__main__':
@@ -98,7 +97,7 @@ if __name__ == '__main__':
     fake_filename = "Fake.csv"
 
     n = 1
-    dataObject = DataPrep( true_filepath=os.path.join(data_repo, true_filename), fake_filepath=os.path.join(data_repo, fake_filename), n=n, method='TF', feature_size= 50)
+    dataObject = DataPrep( true_filepath=os.path.join(data_repo, true_filename), fake_filepath=os.path.join(data_repo, fake_filename), n=n, method='TF', feature_size= 1000)
     dataObject.preprocess()
    
     
