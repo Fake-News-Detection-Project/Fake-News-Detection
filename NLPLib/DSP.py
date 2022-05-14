@@ -7,6 +7,9 @@ from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 import numpy as np
 from itertools import tee
+import tweepy
+import json
+  
 
 #Interface
 class DatasetInterface:
@@ -51,6 +54,8 @@ class Dataset1(DatasetInterface):
                 
     def getLength(self, training = True):
         return len(self.x_train) if training else len(self.x_test)
+    
+
 
 class CleanedDataset1(DatasetInterface):
     def __init__(self, file_path = "NLPLib/Datasets/CleanedDataset1/cleaned_corpus.csv", train_size = 0.8, seed:int = None):
@@ -97,4 +102,4 @@ if __name__ =="__main__":
     
     print(f"{nbTrue=}")
     print(f"{nbFalse=}")
-        
+
