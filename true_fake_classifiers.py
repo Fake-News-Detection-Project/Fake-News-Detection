@@ -56,7 +56,8 @@ def train_model(dataset:Dataset1, classifier, use_idf:bool=False, n_grams:int=1,
     
 
     predictions_NB = pipeline.predict(dataset.getSample(training=False, returnLabel=False))
-
+    print(predictions_NB)
+    
     return accuracy_score(predictions_NB, dataset.y_test)
 
 ## Dataloading
