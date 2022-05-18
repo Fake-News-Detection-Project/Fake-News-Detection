@@ -1,3 +1,4 @@
 NLPLib/Datasets
 credentials.json
 NLPLib/__pycache__
+glove*
