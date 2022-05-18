@@ -1,0 +1,3 @@
+['elect' 'govern' 'year' 'republican' 'presid' 'state' 'u' 'trump' 'said'
+ 's']
+[12630 14626 15801 16034 21060 26482 31247 38192 69335 99163]
