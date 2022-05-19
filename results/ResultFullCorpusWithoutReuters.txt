@@ -1,0 +1,38 @@
+Classifier: SVM
+        Feature size: 10, N-gram size: 1, TF
+ Model trained in 846.8695051670074 sec
+8980it [00:30, 294.37it/s]
+        Classifier Accuracy Score ->  93.93095768374164
+        Feature size: 10, N-gram size: 1, TF-IDF
+Model trained in 1492.34414768219 sec
+8980it [00:31, 281.81it/s]
+        Classifier Accuracy Score ->  98.44097995545657
+        Feature size: 100, N-gram size: 1, TF
+Model trained in 839.3826310634613 sec
+8980it [00:31, 287.29it/s]
+        Classifier Accuracy Score ->  93.93095768374164
+        Feature size: 100, N-gram size: 1, TF-IDF
+Model trained in 1473.5165712833405 sec
+8980it [00:30, 292.30it/s]
+        Classifier Accuracy Score ->  98.44097995545657
+
+-------------------------------------------
+
+Classifier: RandomForest
+        Feature size: 10, N-gram size: 1, TF
+Model trained in 159.02481245994568 sec
+8980it [00:32, 278.43it/s]
+        Classifier Accuracy Score ->  97.46102449888642
+        Feature size: 10, N-gram size: 1, TF-IDF
+Model trained in 167.69465899467468 sec
+8980it [00:32, 277.64it/s]
+        Classifier Accuracy Score ->  97.55011135857461
+        Feature size: 100, N-gram size: 1, TF
+Model trained in 192.04797339439392 sec
+8980it [00:34, 258.76it/s]
+        Classifier Accuracy Score ->  97.57238307349667
+        Feature size: 100, N-gram size: 1, TF-IDF
+Model trained in 177.23317909240723 sec
+8980it [00:30, 293.55it/s]
+        Classifier Accuracy Score ->  97.32739420935413
+-------------------------------------------
