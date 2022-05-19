@@ -13,6 +13,8 @@ from sklearn.pipeline import Pipeline
 
 from NLPLib.DSP import CleanedDataset1, Dataset1
 
+import argparse
+
 def train_model(dataset:Dataset1, classifier, use_idf:bool=False, n_grams:int=1, additional_stop_words:set={}, max_features:int=5000):
     #We fit on the train data
     startime = time.time()
@@ -32,7 +34,6 @@ def train_model(dataset:Dataset1, classifier, use_idf:bool=False, n_grams:int=1,
     stem_analyzer = lambda doc: (stemmer.stem(w) for w in analyzer(doc))
 
     CountVec = CountVectorizer(analyzer=stem_analyzer)
-    # X = CountVec.fit_transform(tqdm(dataset.getSample(returnLabel=False), total=dataset.getLength()))
 
     # Compute features
     TfidTransfo = TfidfTransformer(use_idf=use_idf)
@@ -42,55 +43,39 @@ def train_model(dataset:Dataset1, classifier, use_idf:bool=False, n_grams:int=1,
                         ('tfidf', TfidTransfo),
                         ('clf', classifier)])
 
-<<<<<<< HEAD
-print(Train_X_Tfidf.shape)
-
-
-# We train the model =====================================================================================
-SVM = svm.SVC()
-SVM.fit(Train_X_Tfidf, Train_Y)
-=======
     
     # Running the pipeline
     pipeline.fit(dataset.x_train, dataset.y_train)
-    # pipeline.fit(tqdm(dataset.getSample(returnLabel=False), total=dataset.getLength()))
-    
     
     execTime = time.time() - startime
-    print(f"Model trained in {execTime}")
->>>>>>> 07f65fff0f82d1aee85926a5ca3383944199788c
+    print(f"Model trained in {execTime} sec")
 
-    # # We test it on the test set
-    # Test_X_Tfidf = Tfidf_vect.transform(dataset.getSample(training=False, returnLabel=False))
-    
-
-<<<<<<< HEAD
-# We test it on the test set ==============================================================================
-Test_X_Tfidf = Tfidf_vect.transform(dataset.getSample(training=False, returnLabel=False))
-Test_Y = np.array([a for a in dataset.getLabel(training=False)])
-=======
-    predictions_NB = pipeline.predict(dataset.getSample(training=False, returnLabel=False))
-    print(predictions_NB)
+    predictions_NB = pipeline.predict(tqdm(dataset.getSample(training=False, testing=True, returnLabel=False)))
+    # print(predictions_NB)
     
     return accuracy_score(predictions_NB, dataset.y_test)
 
-## Dataloading
-# dataset = CleanedDataset1()
-dataset = Dataset1(train_size = 0.2)
-features_size = [10,20]
-stop_word = {'reuters', 'washington', 'seattle'}
-classifiers_name = ["SVM", "5-NN", "RandomForest"]
-classifiers = [svm.SVC(), neighbors.KNeighborsClassifier(), ensemble.RandomForestClassifier()]
->>>>>>> 07f65fff0f82d1aee85926a5ca3383944199788c
+if __name__ == '__main__':
 
-for i, classifier in enumerate(classifiers):
-    print("Classifier:", classifiers_name[i])
-    for feature in features_size:
-        for n in range(1, 5):
+    ## Dataloading
+    # dataset = CleanedDataset1()
+    dataset = Dataset1(train_size = 0.8)
+    features_size = [10, 100]
+    stop_word = {} # 'reuters', 'washington', 'seattle'
+    classifiers_name = ["SVM", "5-NN", "RandomForest"]
+    classifiers = [svm.SVC(), neighbors.KNeighborsClassifier(), ensemble.RandomForestClassifier()]
+
+    n = 1
+    for i, classifier in enumerate(classifiers):
+        if i == 1: continue
+        print("Classifier:", classifiers_name[i])
+        for feature in features_size:
             print(f"\tFeature size: {feature}, N-gram size: {n}, TF")
-            accuracy_score = train_model(dataset, classifier=classifier, max_features=feature, use_idf=False, n_grams=n, additional_stop_words=stop_word)
-            print("\tClassifier Accuracy Score -> ", accuracy_score*100)
+            acc_score = train_model(dataset, classifier=classifier, max_features=feature, use_idf=False, n_grams=n, additional_stop_words=stop_word)
+            print("\tClassifier Accuracy Score -> ", acc_score*100)
 
             print(f"\tFeature size: {feature}, N-gram size: {n}, TF-IDF")
-            accuracy_score = train_model(dataset, classifier=classifier, max_features=feature, use_idf=True, n_grams=n, additional_stop_words=stop_word)
-            print("\tClassifier Accuracy Score -> ", accuracy_score*100)
+            acc_score = train_model(dataset, classifier=classifier, max_features=feature, use_idf=True, n_grams=n, additional_stop_words=stop_word)
+            print("\tClassifier Accuracy Score -> ", acc_score*100)
+        print('--------------------')
+
