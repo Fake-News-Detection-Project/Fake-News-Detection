@@ -1,0 +1,1 @@
+python true_fake_rnn.py -ef glove.6B.50d.txt -e 3 -lr 0.05
