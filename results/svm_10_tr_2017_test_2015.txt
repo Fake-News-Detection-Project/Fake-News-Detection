@@ -1,0 +1,8 @@
+Loading model from models/svm_feature_10_year_2017_gram_1_useIDF_False_part_size_0.8
++-----------+----------------+----------------+
+|           | Predicted Fake | Predicted True |
++-----------+----------------+----------------+
+| Real Fake | 469            | 28             |
+| Real True | 0              | 0              |
++-----------+----------------+----------------+
+Test accuracy: 0.9437

@@ -1,0 +1,10 @@
+Training KNN
+Model trained in 78.54078578948975 sec
+Saving model (Can take a long time)
++-----------+----------------+----------------+
+|           | Predicted Fake | Predicted True |
++-----------+----------------+----------------+
+| Real Fake | 1702           | 189            |
+| Real True | 1092           | 2198           |
++-----------+----------------+----------------+
+Test accuracy: 0.7528

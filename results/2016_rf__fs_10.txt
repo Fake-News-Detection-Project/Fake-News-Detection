@@ -1,0 +1,10 @@
+Training Random Forest
+Model trained in 62.79538607597351 sec
+Saving model (Can take a long time)
++-----------+----------------+----------------+
+|           | Predicted Fake | Predicted True |
++-----------+----------------+----------------+
+| Real Fake | 2357           | 10             |
+| Real True | 32             | 895            |
++-----------+----------------+----------------+
+Test accuracy: 0.9872
