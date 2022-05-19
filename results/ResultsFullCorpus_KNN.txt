@@ -1,0 +1,14 @@
+Classifier: 5-NN
+	Feature size: 10, N-gram size: 1, TF
+Model trained in 163.05013990402222 sec
+	Classifier Accuracy Score ->  82.19376391982183
+	Feature size: 10, N-gram size: 1, TF-IDF
+Model trained in 156.63895273208618 sec
+	Classifier Accuracy Score ->  71.29175946547885
+	Feature size: 100, N-gram size: 1, TF
+Model trained in 149.69698572158813 sec
+	Classifier Accuracy Score ->  82.19376391982183
+	Feature size: 100, N-gram size: 1, TF-IDF
+Model trained in 151.011577129364 sec
+	Classifier Accuracy Score ->  71.29175946547885
+--------------------
