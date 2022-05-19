@@ -11,22 +11,12 @@ from torch.utils.data import DataLoader
 from torch import optim, nn
 import torch
 
-
-
-
-# Load the glove word embedder =========================================================================================
-
-
 # The special symbols to be added at the end of strings
 START_SYMBOL = '<START>'
 END_SYMBOL = '<END>'
 
 PADDING_WORD = '<PAD>'
 UNKNOWN_WORD = '<UNK>'
-
-
-
-
 
 
 if __name__ == "__main__":
