@@ -104,18 +104,17 @@ class PadSequence:
     """
     def __call__(self, batch, pad_data=PADDING_WORD, max_len=500, pad_labels=0):
         batch_data, batch_labels = zip(*batch)
-        # max_len = max(map(len, batch_labels))
+
         padded_data = [[b[i] if i < len(b) else pad_data for i in range(max_len)] for b in batch_data]
-        # padded_labels = [[l[i] if i < len(l) else pad_labels for i in range(max_len)] for l in batch_labels]
         return padded_data, batch_labels
     
     
     
 
 class RNNDataset(Dataset):
-    def __init__(self, true_filepath = "NLPLib/Datasets/Dataset1/True.csv", fake_filepath="NLPLib/Datasets/Dataset1/Fake.csv", lenSequence=500, corpus_percent = 0.5):
+    def __init__(self, true_filepath = "NLPLib/Datasets/Dataset1/True.csv", fake_filepath="NLPLib/Datasets/Dataset1/Fake.csv", lenSequence=500, corpus_percent = 1, setTraining = True, train_size = 0.8):
 
-        # self.corpus = pd.read_csv(file_path)
+        self.setTraning = setTraining
         
         true = pd.read_csv(true_filepath)
         true['label'] = np.ones(len(true), dtype=int)
@@ -123,27 +122,27 @@ class RNNDataset(Dataset):
         fake['label'] = np.zeros(len(fake), dtype=int)
 
         self.corpus = pd.concat((true,fake),axis=0)
-        
         self.lenSequence = lenSequence
-        
         self.corpus_percent = corpus_percent
         
-        self.x, self.y = self.corpus.text.to_numpy(), self.corpus.label.to_numpy()
-                
-        shuffledIndices = np.arange(len(self.corpus))
-        np.random.shuffle(shuffledIndices)
-
-        self.x, self.y = self.x[shuffledIndices], self.y[shuffledIndices]
-                
-
-    def __getitem__(self, idx) -> Tuple[np.ndarray, float]:
-        # sequence = json.loads(self.x[idx].replace("'", "\""))
-        sequence = nltk.word_tokenize(self.x[idx])
-        return sequence, self.y[idx]
+        x, y = self.corpus.text.to_numpy(), self.corpus.label.to_numpy()
+        self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(x, y, train_size=train_size)
         
                 
+
+    def __getitem__(self, idx) -> Tuple[np.ndarray, float]:        
+        if self.setTraning:
+            sequence = nltk.word_tokenize(self.x_train[idx])
+            return sequence, self.y_train[idx]
+        else:
+            sequence = nltk.word_tokenize(self.x_test[idx])
+            return sequence, self.y_test[idx]
+                
     def __len__(self):
-        return (int)(len(self.y) * self.corpus_percent)
+        if self.setTraning:
+            return (int)(len(self.y_train) * self.corpus_percent)
+        else:
+            return (int)(len(self.y_test))
 
 
 
