@@ -9,6 +9,7 @@ from tqdm import tqdm
 import numpy as np
 import json
 import nltk
+import re
 
   
 
@@ -24,14 +25,20 @@ class DatasetInterface:
 
 
 class Dataset1(DatasetInterface):
-    def __init__(self, true_filepath = "NLPLib/Datasets/Dataset1/True.csv", fake_filepath="NLPLib/Datasets/Dataset1/Fake.csv", train_size = 0.8, seed:int = None):
-        true = pd.read_csv(true_filepath)
-        true['label'] = np.ones(len(true), dtype=int)
-        fake = pd.read_csv(fake_filepath)
-        fake['label'] = np.zeros(len(fake), dtype=int)
+    def __init__(self, true_filepath = "NLPLib/Datasets/Dataset1/True.csv", fake_filepath="NLPLib/Datasets/Dataset1/Fake.csv", train_size = 0.8, seed:int = None, year:str=None):
+        year_pattern= r'(20)[1-9]{2}'
+        self.true = pd.read_csv(true_filepath)
+        self.true['label'] = np.ones(len(self.true), dtype=int)
+        self.true['year'] = self.true['date'].apply( lambda x: re.search(year_pattern, x).group(0) if re.search(year_pattern, x) is not None else 'UKN' )
+        self.fake = pd.read_csv(fake_filepath)
+        self.fake['label'] = np.zeros(len(self.fake), dtype=int)
+        self.fake['year'] = self.fake['date'].apply(lambda x: re.search(year_pattern, x).group(0) if re.search(year_pattern, x) is not None else 'UKN')
 
-        self.corpus = pd.concat((true,fake),axis=0)
+        self.corpus = pd.concat((self.true,self.fake),axis=0)
         
+        if year is not None:
+            self.corpus = self.corpus[self.corpus.year == year]
+
         self.seed = np.random.randint(0, 10000) if seed == None else seed
         
         self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(self.corpus.text, self.corpus.label, train_size=train_size, random_state=seed)
@@ -149,11 +156,12 @@ class RNNDataset(Dataset):
 
 #Testing the DSP (execute in NLPLib folder)
 if __name__ =="__main__":
-    data_repo = "../data"
+    data_repo = "./Datasets/Dataset1"
     true_filename = "True.csv"
     fake_filename = "Fake.csv"
+    year = "2017"
 
-    dataset = Dataset1(true_filepath=os.path.join(data_repo, true_filename), fake_filepath=os.path.join(data_repo, fake_filename))
+    dataset = Dataset1(true_filepath=os.path.join(data_repo, true_filename), fake_filepath=os.path.join(data_repo, fake_filename), year=year)
     nbTrue = 0
     nbFalse = 0
     for (text, label) in tqdm(dataset.getSample(), desc="Reading corpus", total=dataset.getLength()):
@@ -162,4 +170,3 @@ if __name__ =="__main__":
     
     print(f"{nbTrue=}")
     print(f"{nbFalse=}")
-
