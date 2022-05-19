@@ -73,13 +73,12 @@ class FeatureExtractor():
                     if selected_grams_dict.get(gram) != None:
                         
                         feature_vect[i, selected_grams_dict.get(gram)] += 1
-                # print(feature_vect[i])
+
                 if np.sum(feature_vect[i])  != 0:
                     feature_vect[i] /= np.sum(feature_vect[i])
                 else:
                     print("IS NAN")
         
-            # feature = list(feature_vect)
     
         return feature_vect
     

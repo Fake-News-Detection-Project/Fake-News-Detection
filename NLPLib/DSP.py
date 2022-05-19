@@ -1,19 +1,17 @@
 import os
 import string
-from typing import Tuple
-import pandas as pd
-
-from sklearn.model_selection import train_test_split
-from torch.utils.data import Dataset
-from nltk.corpus import stopwords
-
-from tqdm import tqdm
-import numpy as np
-import json
 import nltk
 import re
 
-  
+from typing import Tuple
+import pandas as pd
+from tqdm import tqdm
+import numpy as np
+from torch.utils.data import Dataset
+
+from sklearn.model_selection import train_test_split
+from nltk.corpus import stopwords
+
 
 #Interface
 class DatasetInterface:
@@ -27,16 +25,18 @@ class DatasetInterface:
 
 
 class Dataset1(DatasetInterface):
-    def __init__(self, true_filepath = "NLPLib/Datasets/Dataset1/True.csv", fake_filepath="NLPLib/Datasets/Dataset1/Fake.csv", train_size = 0.8, seed:int = None, year:str=None):
+    def __init__(self, true_filepath:str = "NLPLib/Datasets/Dataset1/True.csv", fake_filepath:str = "NLPLib/Datasets/Dataset1/Fake.csv", train_size:float = 0.8, seed:int = None, year:str = None, preprocess:bool = True):
         year_pattern= r'(20)[1-9]{2}'
         self.true = pd.read_csv(true_filepath)
         self.true['label'] = np.ones(len(self.true), dtype=int)
         self.true['year'] = self.true['date'].apply( lambda x: re.search(year_pattern, x).group(0) if re.search(year_pattern, x) is not None else 'UKN' )
+        
         self.fake = pd.read_csv(fake_filepath)
         self.fake['label'] = np.zeros(len(self.fake), dtype=int)
         self.fake['year'] = self.fake['date'].apply(lambda x: re.search(year_pattern, x).group(0) if re.search(year_pattern, x) is not None else 'UKN')
 
         self.corpus = pd.concat((self.true,self.fake),axis=0)
+        self.preprocess = preprocess
         
         if year is not None:
             self.corpus = self.corpus[self.corpus.year == year]
@@ -50,11 +50,14 @@ class Dataset1(DatasetInterface):
 
         if training:
             for i in range(self.getLength(True)):
-                yield (self.x_train.iloc[i], self.y_train.iloc[i]) if returnLabel else self.x_train.iloc[i]
+                txt = self.applyPreprocess(self.x_train.iloc[i])
+                yield (txt, self.y_train.iloc[i]) if returnLabel else txt
 
         if testing:
             for i in range(self.getLength(False)):
-                yield (self.x_test.iloc[i], self.y_test.iloc[i]) if returnLabel else self.x_test.iloc[i]
+                txt = self.applyPreprocess(self.x_test.iloc[i])
+                
+                yield (txt, self.y_test.iloc[i]) if returnLabel else txt
     
     def getLabel(self, training:bool = True):
         for i in range(self.getLength(training)):
@@ -66,6 +69,12 @@ class Dataset1(DatasetInterface):
                 
     def getLength(self, training = True):
         return len(self.x_train) if training else len(self.x_test)
+    
+    def applyPreprocess(self, txt):
+        subStringIndex = txt.find(" - ") #To get rid of the reuters and name of the city
+        if self.preprocess and subStringIndex != -1 and subStringIndex < 100: txt = txt[subStringIndex:] 
+
+        return txt
     
 
 
@@ -79,7 +88,6 @@ class CleanedDataset1(DatasetInterface):
         self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(self.corpus.final_text, self.corpus.label, train_size=train_size, random_state=seed)
         
 
-
     def getSample(self, training: bool = True, testing=False, returnLabel:bool = True) -> Tuple[np.ndarray, float]:
 
         if training:
@@ -91,8 +99,6 @@ class CleanedDataset1(DatasetInterface):
                 yield (self.x_test.iloc[i], self.y_test.iloc[i]) if returnLabel else self.x_test.iloc[i]
         
     
-    
-    
     def getLabel(self, training:bool = True):
         for i in range(self.getLength(training)):
             if training:
@@ -103,10 +109,10 @@ class CleanedDataset1(DatasetInterface):
                 
     def getLength(self, training = True):
         return len(self.x_train) if training else len(self.x_test)
+ 
     
 PADDING_WORD = '<PAD>'
 UNKNOWN_WORD = '<UNK>'
-
 class PadSequence:
     """
     A callable used to merge a list of samples to form a padded mini-batch of Tensor
@@ -116,8 +122,6 @@ class PadSequence:
 
         padded_data = [[b[i] if i < len(b) else pad_data for i in range(max_len)] for b in batch_data]
         return padded_data, batch_labels
-    
-    
     
 
 class RNNDataset(Dataset):
@@ -136,7 +140,6 @@ class RNNDataset(Dataset):
         self.preprocess = preprocess
         
         self.stop_words = set(stopwords.words('english'))
-        # self.stop_words |= set(["reuters", "washington", "seattle", "lima", "vatican", "york", "zurich"])
         self.punctuation_translator = str.maketrans('', '', string.punctuation)
         
         x, y = self.corpus.text.to_numpy(), self.corpus.label.to_numpy()
@@ -147,10 +150,9 @@ class RNNDataset(Dataset):
     def __getitem__(self, idx) -> Tuple[np.ndarray, float]:        
         if self.setTraning:
             txt = self.x_train[idx]
-
             sequence = self.applyPreprocess(txt)
-            
             return sequence, self.y_train[idx]
+        
         else:
             txt = self.x_test[idx]
             sequence = self.applyPreprocess(txt)
@@ -159,6 +161,7 @@ class RNNDataset(Dataset):
     def __len__(self):
         if self.setTraning:
             return (int)(len(self.y_train) * self.corpus_percent)
+        
         else:
             return (int)(len(self.y_test))
         

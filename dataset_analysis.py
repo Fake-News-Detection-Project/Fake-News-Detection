@@ -31,9 +31,11 @@ def analyse_ds(dataset:Dataset1, use_idf:bool=False, n_grams:int=1, additional_s
 if __name__ == "__main__":
     np.random.seed(10)
 
+    
+
     n_word = 10
     stop_word = {'reuters'}
-    dataset = Dataset1(train_size = 15000)
+    dataset = Dataset1()
     features_names, X = analyse_ds(dataset, max_features=n_word, additional_stop_words=stop_word)
 
     word_freq = X.toarray().sum(axis=0)
@@ -61,6 +63,35 @@ if __name__ == "__main__":
     # plt.scatter(X_reduce_1[:, 0], X_reduce_1[:, 1], marker='x')
     # plt.scatter(X_reduce_2[:, 0], X_reduce_2[:,  1], marker='o')
     # plt.show()
+    
+
+    textSizesTrue = []
+    textSizesFake = []
+    nbText = 0
+
+    for (sample, label) in tqdm(dataset.getSample(training=True, testing=True), total=dataset.getLength()):
+        sentence = sample.split()
+        
+        if label == 1: textSizesTrue.append(len(sentence))
+        else: textSizesFake.append(len(sentence))
+        
+
+    textSizes = textSizesFake + textSizesTrue
+    print(f"Average number of word: {np.mean(np.array(textSizes))} words")
+    print(f"Variance of the number of word: {np.std(np.array(textSizes))}")
+    print(f"Minimum  number of word: {np.min(np.array(textSizes))} words")
+    print(f"Maximum number of word: {np.max(np.array(textSizes))} words")
+
+
+    print(f"Number of sentences longer than 3000 words {np.sum(np.array(textSizes) > 3000)}")
+    print(f"Number of sentences shorter than 5 words {np.sum(np.array(textSizes) <= 5)}")
+
+    plt.title("Length of the True articles.")
+    plt.hist(textSizesTrue, bins=200)
+    plt.show()
+    plt.title("Length of the Fake articles.")
+    plt.hist(textSizesFake, bins=200)
+    plt.show()
 
     
 

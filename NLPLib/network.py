@@ -4,9 +4,6 @@ from torch.nn import GRU, LSTM
 import numpy as np
 
 
-def is_identical(a, b):
-    return "Yes" if np.all(np.abs(a - b) < 1e-6) else "No"
-
 PADDING_WORD = '<PAD>'
 UNKNOWN_WORD = '<UNK>'
 
