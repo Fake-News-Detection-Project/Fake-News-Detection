@@ -1,1 +1,0 @@
-remove reuters and washington at the beginning (risk of overfitting). Remove name of the media in general

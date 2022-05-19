@@ -34,7 +34,7 @@ if __name__ == "__main__":
     #Args =============================================
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('-ef', '--embeddings', default='', help='A file with word embeddings')
-    parser.add_argument('-bs', '--batch_size', type=int, default=128, help='Batch size')
+    parser.add_argument('-bs', '--batch_size', type=int, default=250, help='Batch size')
     parser.add_argument('-e', '--epochs', type=int, default=10, help='Number of epochs')
     parser.add_argument('-lr', '--learning_rate', type=float, default=0.01, help='Learning rate')
     
@@ -51,16 +51,15 @@ if __name__ == "__main__":
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    
     # Preparing datasets ==============================
-    training_dataset = RNNDataset(lenSequence=100, corpus_percent=1)
-    training_loader = DataLoader(training_dataset, args.batch_size, collate_fn=PadSequence())
+    dataset = RNNDataset(lenSequence=100)
+    training_loader = DataLoader(dataset, args.batch_size, collate_fn=PadSequence())
     
     
     # Prepare network training ========================
-    network = FakeNewsClassifier("glove.6B.50d.txt", device=device, hidden_size=200)
+    network = FakeNewsClassifier("glove.6B.50d.txt", device=device, hidden_size=128)
     
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCELoss()
     optimizer = optim.Adam(network.parameters(), lr=args.learning_rate)
     
     network.train()
@@ -73,11 +72,8 @@ if __name__ == "__main__":
             
             logits = network(samples)
             logits_shape = logits.shape
-                      
-            # print(f"Logits {logits_shape}")
-            # print(f"Labels {torch.tensor(labels).reshape(-1,).shape}")
-            
-            loss = criterion(logits, torch.tensor(labels).reshape(-1,).to(device))
+                                  
+            loss = criterion(logits[:,0], torch.tensor(labels, dtype=torch.float).to(device))
             loss.backward()
             
             lossAverage += loss.item()
@@ -91,11 +87,13 @@ if __name__ == "__main__":
     network.eval()
     confusion_matrix = [[0, 0],
                         [0, 0]]
-    test_data = RNNDataset(lenSequence=100, corpus_percent=0.05)
-    testing_loader = DataLoader(test_data, args.batch_size, collate_fn=PadSequence())
+
+    dataset.setTraning = False
+    testing_loader = DataLoader(dataset, args.batch_size, collate_fn=PadSequence())
     
     for x, y in tqdm(testing_loader, desc="Testing set"):
-        pred = torch.argmax(network(x), dim=-1).cpu().detach().numpy().reshape(-1,)
+        result = network(x)
+        pred = torch.round(result).cpu().detach().numpy().reshape(-1,)
         y = np.array(y)
 
         tp = np.sum(pred[y == 1])
