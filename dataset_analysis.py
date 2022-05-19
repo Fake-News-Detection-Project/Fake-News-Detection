@@ -36,16 +36,16 @@ if __name__ == "__main__":
     n_word = 10
     stop_word = {'reuters'}
     dataset = Dataset1()
-    features_names, X = analyse_ds(dataset, max_features=n_word, additional_stop_words=stop_word)
+    # features_names, X = analyse_ds(dataset, max_features=n_word, additional_stop_words=stop_word)
 
-    word_freq = X.toarray().sum(axis=0)
+    # word_freq = X.toarray().sum(axis=0)
 
-    perm = np.argsort(word_freq)[-n_word:] # Selecting n_word most frequent words
-    word_freq = word_freq[perm]
-    features_names = features_names[perm]
+    # perm = np.argsort(word_freq)[-n_word:] # Selecting n_word most frequent words
+    # word_freq = word_freq[perm]
+    # features_names = features_names[perm]
 
-    print(features_names)
-    print(word_freq)
+    # print(features_names)
+    # print(word_freq)
 
     # plt.bar(x=features_names, height=word_freq)
     # plt.show()
