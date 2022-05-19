@@ -54,9 +54,7 @@ def train_model(dataset:Dataset1, classifier, use_idf:bool=False, n_grams:int=1,
     # # We test it on the test set
     # Test_X_Tfidf = Tfidf_vect.transform(dataset.getSample(training=False, returnLabel=False))
     
-
-    predictions_NB = pipeline.predict(dataset.getSample(training=False, returnLabel=False))
-    print(predictions_NB)
+    predictions_NB = pipeline.predict(dataset.getSample(training=False, testing=True, returnLabel=False))
     
     return accuracy_score(predictions_NB, dataset.y_test)
 

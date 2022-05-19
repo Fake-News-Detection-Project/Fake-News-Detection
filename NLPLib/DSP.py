@@ -1,9 +1,11 @@
 import os
+import string
 from typing import Tuple
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset
+from nltk.corpus import stopwords
 
 from tqdm import tqdm
 import numpy as np
@@ -112,7 +114,7 @@ class PadSequence:
     
 
 class RNNDataset(Dataset):
-    def __init__(self, true_filepath = "NLPLib/Datasets/Dataset1/True.csv", fake_filepath="NLPLib/Datasets/Dataset1/Fake.csv", lenSequence=500, corpus_percent = 1, setTraining = True, train_size = 0.8):
+    def __init__(self, true_filepath = "NLPLib/Datasets/Dataset1/True.csv", fake_filepath="NLPLib/Datasets/Dataset1/Fake.csv", lenSequence=500, corpus_percent = 1, setTraining = True, train_size = 0.8, preprocess=True):
 
         self.setTraning = setTraining
         
@@ -124,6 +126,11 @@ class RNNDataset(Dataset):
         self.corpus = pd.concat((true,fake),axis=0)
         self.lenSequence = lenSequence
         self.corpus_percent = corpus_percent
+        self.preprocess = preprocess
+        
+        self.stop_words = set(stopwords.words('english'))
+        # self.stop_words |= set(["reuters", "washington", "seattle", "lima", "vatican", "york", "zurich"])
+        self.punctuation_translator = str.maketrans('', '', string.punctuation)
         
         x, y = self.corpus.text.to_numpy(), self.corpus.label.to_numpy()
         self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(x, y, train_size=train_size)
@@ -132,10 +139,14 @@ class RNNDataset(Dataset):
 
     def __getitem__(self, idx) -> Tuple[np.ndarray, float]:        
         if self.setTraning:
-            sequence = nltk.word_tokenize(self.x_train[idx])
+            txt = self.x_train[idx]
+
+            sequence = self.applyPreprocess(txt)
+            
             return sequence, self.y_train[idx]
         else:
-            sequence = nltk.word_tokenize(self.x_test[idx])
+            txt = self.x_test[idx]
+            sequence = self.applyPreprocess(txt)
             return sequence, self.y_test[idx]
                 
     def __len__(self):
@@ -143,6 +154,16 @@ class RNNDataset(Dataset):
             return (int)(len(self.y_train) * self.corpus_percent)
         else:
             return (int)(len(self.y_test))
+        
+    def applyPreprocess(self, txt):
+        subStringIndex = txt.find(" - ") #To get rid of the reuters and name of the city
+        if self.preprocess and subStringIndex != -1 and subStringIndex < 100: txt = txt[subStringIndex:] 
+        
+        if self.preprocess: txt = txt.translate(self.punctuation_translator) #We get rid of the punctuation
+        sequence = nltk.word_tokenize(txt)
+        if self.preprocess: sequence = [w.lower() for w in sequence if not w.lower() in self.stop_words] #Removal of stop words
+        
+        return sequence
 
 
 
