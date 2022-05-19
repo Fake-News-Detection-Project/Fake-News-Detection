@@ -68,6 +68,7 @@ if __name__ == "__main__":
         lossAverage = 0
         for samples, labels in tqdm(training_loader, desc="Epoch {}".format(epoch + 1)):
             
+            
             optimizer.zero_grad()
             
             logits = network(samples)
