@@ -1,10 +1,10 @@
-Training SVM
-Model trained in 1041.6983094215393 sec
+Training KNN
+Model trained in 141.95474529266357 sec
 Saving model (Can take a long time)
 +-----------+----------------+----------------+
 |           | Predicted Fake | Predicted True |
 +-----------+----------------+----------------+
-| Real Fake | 4684           | 20             |
-| Real True | 15             | 4261           |
+| Real Fake | 4200           | 395            |
+| Real True | 1263           | 3122           |
 +-----------+----------------+----------------+
-Test accuracy: 0.9961
+Test accuracy: 0.8154

@@ -8,6 +8,49 @@ The purpose of our project is to reproduce the result and performance of some (?
 [Corentin Royer](https://github.com/corentin-ryr)  
 [Baptiste Engel](https://github.com/engelba)
 
+## Running the project 
+
+You first need to have the Dataset in the folder NLPLib/Datasets/Dataset1, and to install requirements by entering:  
+```
+pip install -r requirements.txt
+```
+
+### Classifiers
+
+The classifiers are run with the file true_fake_classifiers.py. Possible arguments are:
+- --classifier [svm | knn | rf] - TOo hoose the classifier you want to use
+- --load MODEL_PATH - To load a previously saved model 
+- --save - To save model after training
+- --feature-size INT - To choose size of vectors
+- -idf - To use IDF 
+- -gram INT - To choose the size of n-gram you want to use
+- --year [2015|2016|2017] - To only use articles from a specific year
+- -part (0,1) - To choose the size of the partition for training.  
+
+Example:
+```
+python true_fake_classifiers.py -clf knn -fs 10 -gram 1 -part 0.8 -s > results/knn_10_year_None.txt
+```
+
+Or running ```. classifiers.sh``` to run a whole batch of different classifiers. 
+
+### RNN
+
+To run the RNN, you need to download [GloVe](https://nlp.stanford.edu/projects/glove/) word embedding.
+To run the RNN, execute the file "true_fake_rnn.py" with the arguments:
+
+-   --embeddings FILE_WITH_GLOVE_MATRIX
+-   --batch_size BATCH_SIZE
+-   --epochs NB_EPOCHS
+-   --learning_rate VALUE_LEARNING_RATE
+
+We recommend the values:
+
+```
+python true_fake_rnn.py --embeddings glove.6B.50d.txt --epochs 3 --learning_rate 0.05
+```  
+or you can run ```source rnn.sh```.
+
 ## Methodology
 
 As we want initialy to reproduce the results in [2], we will follow the same data preprocesing methodology.
@@ -31,7 +74,6 @@ The models are tested with two features:
 ### Classifiers
 
 Comparison of 6 simples ML algorithms in [2]: SGD, SVM, LSVM, KNN, Decision Trees.  
-5-fold CV is used with 80% of the data for training and 20% for validation.
 
 To run the RNN, execute the file "ptru_fake_rnn.py" with the arguments:
 

@@ -1,22 +1,21 @@
 import time
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-import numpy as np
-from sklearn import svm, neighbors, ensemble
-from terminaltables import AsciiTable
 import os
-from tqdm import tqdm
+
+import numpy as np
+
+from sklearn import svm, neighbors, ensemble
+from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction import text
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+
+from terminaltables import AsciiTable
+from tqdm import tqdm
+
 from nltk.stem import porter
-from sklearn.decomposition import PCA, TruncatedSVD
-import matplotlib.pyplot as plt
-from sklearn.pipeline import Pipeline
 
-from NLPLib.DSP import CleanedDataset1, Dataset1
-
-# import pickle
+from NLPLib.DSP import Dataset1
 import dill as pickle
-
 import argparse
 
 def train_model(dataset:Dataset1, classifier, use_idf:bool=False, n_grams:int=1, additional_stop_words:set={}, max_features:int=5000):

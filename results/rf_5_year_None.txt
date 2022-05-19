@@ -1,10 +1,10 @@
-Training SVM
-Model trained in 1041.6983094215393 sec
+Training Random Forest
+Model trained in 191.35678577423096 sec
 Saving model (Can take a long time)
 +-----------+----------------+----------------+
 |           | Predicted Fake | Predicted True |
 +-----------+----------------+----------------+
-| Real Fake | 4684           | 20             |
-| Real True | 15             | 4261           |
+| Real Fake | 4628           | 51             |
+| Real True | 48             | 4253           |
 +-----------+----------------+----------------+
-Test accuracy: 0.9961
+Test accuracy: 0.989
