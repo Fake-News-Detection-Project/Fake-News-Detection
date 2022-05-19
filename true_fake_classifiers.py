@@ -54,7 +54,9 @@ def train_model(dataset:Dataset1, classifier, use_idf:bool=False, n_grams:int=1,
     # # We test it on the test set
     # Test_X_Tfidf = Tfidf_vect.transform(dataset.getSample(training=False, returnLabel=False))
     
-    predictions_NB = pipeline.predict(dataset.getSample(training=False, testing=True, returnLabel=False))
+
+    predictions_NB = pipeline.predict(dataset.getSample(training=False, returnLabel=False))
+    print(predictions_NB)
     
     return accuracy_score(predictions_NB, dataset.y_test)
 
@@ -65,6 +67,7 @@ features_size = [10,20]
 stop_word = {'reuters', 'washington', 'seattle'}
 classifiers_name = ["SVM", "5-NN", "RandomForest"]
 classifiers = [svm.SVC(), neighbors.KNeighborsClassifier(), ensemble.RandomForestClassifier()]
+
 
 for i, classifier in enumerate(classifiers):
     print("Classifier:", classifiers_name[i])
