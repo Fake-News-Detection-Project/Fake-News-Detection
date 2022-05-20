@@ -33,10 +33,10 @@ def train_model(dataset:Dataset1, classifier, use_idf:bool=False, n_grams:int=1,
     stemmer = porter.PorterStemmer()
     pattern = r"\w*[a-z]+"
 
-    analyzer = CountVectorizer(token_pattern=pattern, ngram_range=(n_grams, n_grams), max_features=max_features,lowercase=True, stop_words=stop_words).build_analyzer()
+    analyzer = CountVectorizer(token_pattern=pattern, ngram_range=(n_grams, n_grams),lowercase=True, stop_words=stop_words).build_analyzer()
     stem_analyzer = lambda doc: (stemmer.stem(w) for w in analyzer(doc))
 
-    CountVec = CountVectorizer(analyzer=stem_analyzer)
+    CountVec = CountVectorizer(analyzer=stem_analyzer, max_features=max_features)
 
     # Compute features
     TfidTransfo = TfidfTransformer(use_idf=use_idf)
@@ -141,3 +141,28 @@ if __name__ == '__main__':
         print("Test accuracy: {}".format(
             round((confusion_matrix[0][0] + confusion_matrix[1][1]) / np.sum(confusion_matrix), 4))
         )
+
+        #========Interactive Mode
+        # stemmer = porter.PorterStemmer()
+        # pattern = r"\w*[a-z]+"
+
+        # analyzer = CountVectorizer(token_pattern=pattern, ngram_range=(1, 1), max_features=10,lowercase=True).build_analyzer()
+        # stem_analyzer = lambda doc: (stemmer.stem(w) for w in analyzer(doc))
+
+        # print('Entrer \'try\' to run on a random article. Type q to quit.')
+        # in_cmd = ''
+
+        # data = [doc for doc in dataset.getSample(training=True, testing=True, returnLabel=False)]
+        # rng = np.random.default_rng()
+        # while True:
+        #     in_cmd = input(">")
+        #     if in_cmd == 'q':
+        #         break
+        #     elif in_cmd == 'try':
+        #         idx = rng.integers(low=0, high=len(data))
+        #         print('======Selected article:======')
+        #         print(data[idx], '\n')
+        #         print('======Transformed article:======')
+        #         print(' '.join([stemmer.stem(w) for w in analyzer(data[idx])]), '\n')
+        #         print('======Article vector:======')
+        #         print(model['tfidf'].transform(model['count'].transform([data[idx]])))
